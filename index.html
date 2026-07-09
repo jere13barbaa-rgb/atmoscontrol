@@ -3,389 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estación Climática IoT - Premium Dark</title>
+    <title>AtmosControl IoT Pro</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Paleta de Colores Neón / Oscuro */
         :root {
-            --bg-principal: #0b0b12;       /* Negro muy oscuro con tinte azulado/morado */
-            --bg-tarjeta: #161623;         /* Gris oscuro para las tarjetas */
-            --morado-neon: #9d4edf;        /* Morado neón brillante */
-            --morado-oscuro: #5a189a;      /* Morado de acento */
-            --texto-principal: #e0aaff;    /* Blanco/Morado muy claro para texto */
-            --texto-secundario: #9a8c98;   /* Gris claro para etiquetas */
-            --rojo-alerta: #ff0054;        /* Rojo neón para la alarma */
+            --bg-principal: #06060a;       
+            --bg-tarjeta: #11111d;         
+            --morado-neon: #9d4edf;        
+            --cian-neon: #00f5d4;
+            --texto-principal: #e0aaff;    
+            --texto-secundario: #7b2cbf;   
+            --rojo-alerta: #ff0054;        
         }
 
-        /* Estilos Globales */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg-principal); color: #fff; overflow-x: hidden; }
 
-        body {
-            background-color: var(--bg-principal);
-            color: var(--texto-principal);
-            overflow-x: hidden;
-        }
-
-        /* 1. Pantalla de Carga (Splash Screen) Estilo Cyber */
+        /* Pantalla de Carga */
         #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle, #1a0f2e 0%, var(--bg-principal) 100%);
-            display: flex;
-            flex-direction: column; 
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, #12072b 0%, var(--bg-principal) 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;
+            transition: opacity 0.6s ease, display 0.6s;
         }
+        .splash-logo-container { opacity: 0; transform: scale(0.85); animation: entradaCyber 1.2s forwards ease-out; text-align: center; }
+        .splash-logo-img { max-width: 260px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--morado-neon)); }
+        @keyframes entradaCyber { to { opacity: 1; transform: scale(1); } }
 
-        .splash-logo-container {
-            opacity: 0;
-            transform: scale(0.9);
-            animation: entradaCyber 1.5s forwards ease-out;
-            text-align: center;
-        }
+        /* Contenedor Principal */
+        #main-content { opacity: 0; transition: opacity 0.8s ease; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 10px var(--morado-neon); }
+        header p { color: #9a8c98; font-size: 0.9rem; margin-top: 5px; }
 
-        .splash-logo-img {
-            max-width: 300px; /* Ajusta este valor para cambiar el tamaño del logo */
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        @keyframes entradaCyber {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* 2. Contenedor Principal */
-        #main-content {
-            opacity: 0;
-            transition: opacity 1s ease;
-            padding: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            color: #fff;
-            text-shadow: 0 0 8px var(--morado-neon);
-            margin-bottom: 5px;
-        }
-
-        header p {
-            color: var(--texto-secundario);
-            font-size: 1rem;
-            letter-spacing: 1px;
-        }
-
-        /* Grid de Tarjetas */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
+        /* Grid */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .card {
-            background: var(--bg-tarjeta);
-            border: 1px solid rgba(157, 78, 223, 0.15);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-tarjeta); border: 1px solid rgba(157, 78, 223, 0.1); border-radius: 20px;
+            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; transition: all 0.3s ease;
         }
+        .card:hover { transform: translateY(-3px); border-color: var(--morado-neon); box-shadow: 0 0 20px rgba(157, 78, 223, 0.2); }
+        .card h3 { color: #9a8c98; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
 
-        /* Efecto de borde iluminado al pasar el mouse */
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--morado-neon);
-            box-shadow: 0 0 15px rgba(157, 78, 223, 0.3);
-        }
+        /* Indicadores Circulares Pro (Gauges) */
+        .gauge-container { position: relative; width: 150px; height: 150px; margin: 0 auto; }
+        .gauge-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+        .gauge-bg { fill: none; stroke: #1a1a2e; stroke-width: 10; }
+        .gauge-progress { fill: none; stroke: var(--morado-neon); stroke-width: 10; stroke-linecap: round; stroke-dasharray: 440; stroke-dashoffset: 440; transition: stroke-dashoffset 0.5s ease; }
+        .gauge-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.8rem; font-weight: 700; }
 
-        .card h3 {
-            margin-bottom: 15px;
-            color: var(--texto-secundario);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
+        /* Alerta Crítica Estilo */
+        .alert-active { border-color: var(--rojo-alerta) !important; box-shadow: 0 0 25px rgba(255, 0, 84, 0.3) !important; animation: pulso 2s infinite; }
+        @keyframes pulso { 50% { border-color: rgba(255, 0, 84, 0.2); } }
 
-        .data-value {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-        }
-
-        /* Color específico para destacar las variables */
-        #temp-val, #hum-val {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(157, 78, 223, 0.5);
-        }
-
-        /* Alerta Crítica de Temperatura (34°C) */
-        .alert-active {
-            background: linear-gradient(145deg, #231218, #161623) !important;
-            border: 1px solid var(--rojo-alerta) !important;
-            box-shadow: 0 0 20px rgba(255, 0, 84, 0.4) !important;
-            animation: pulsoAlerta 2s infinite;
-        }
-
-        .alert-active h3 {
-            color: var(--rojo-alerta) !important;
-        }
-        
-        .alert-active #temp-val {
-            color: var(--rojo-alerta) !important;
-            text-shadow: 0 0 15px var(--rojo-alerta) !important;
-        }
-
-        @keyframes pulsoAlerta {
-            50% { box-shadow: 0 0 5px rgba(255, 0, 84, 0.1); }
-        }
-
-        /* Interruptor de Motor Estilo Neón */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 65px;
-            height: 34px;
-            margin-top: 10px;
-        }
-
+        /* Interruptores Modernos */
+        .switch { position: relative; display: inline-block; width: 70px; height: 36px; }
         .switch input { display: none; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #202030; border-radius: 34px; transition: .4s; border: 1px solid rgba(255,255,255,0.05); }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: #888; border-radius: 50%; transition: .4s; }
+        input:checked + .slider { background-color: rgba(0, 245, 212, 0.1); border-color: var(--cian-neon); box-shadow: 0 0 15px var(--cian-neon); }
+        input:checked + .slider:before { transform: translateX(34px); background-color: var(--cian-neon); filter: drop-shadow(0 0 5px var(--cian-neon)); }
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #2c2c3e;
-            border-radius: 34px;
-            transition: .4s;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        /* Estado del Sistema */
+        #status-banner { width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; margin-bottom: 25px; text-align: center; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.05); letter-spacing: 1px; }
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 24px; width: 24px;
-            left: 4px; bottom: 4px;
-            background-color: var(--texto-secundario);
-            border-radius: 50%;
-            transition: .4s;
-        }
-
-        input:checked + .slider {
-            background-color: rgba(157, 78, 223, 0.2);
-            border-color: var(--morado-neon);
-            box-shadow: 0 0 10px var(--morado-neon);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(31px);
-            background-color: var(--morado-neon);
-            box-shadow: 0 0 8px var(--morado-neon);
-        }
-
-        /* Contenedor de la Cámara del ESP32 */
-        .camera-stream {
-            width: 100%;
-            height: 210px;
-            background-color: #09090e;
-            border-radius: 12px;
-            border: 1px dashed rgba(157, 78, 223, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--texto-secundario);
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        /* Texto de GPS */
-        #gps-data {
-            font-size: 1.1rem;
-            color: var(--texto-principal);
-            line-height: 1.6;
-            margin-top: 10px;
-        }
-        
-        #gps-data b {
-            color: var(--morado-neon);
-        }
+        /* Cámara */
+        .camera-stream { width: 100%; height: 200px; background-color: #09090d; border-radius: 15px; border: 1px dashed #303045; display: flex; align-items: center; justify-content: center; color: #555; font-size: 0.9rem; overflow: hidden; }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
         <div class="splash-logo-container">
-            <img src="image_3.png" alt="Logo de Estación Climática" class="splash-logo-img">
-            <span style="font-size: 1.1rem; font-weight: 300; color: var(--texto-secundario); tracking-widest: 1px; display: block;">Iniciando interfaz...</span>
+            <img src="image_3.png" alt="Logo" class="splash-logo-img">
+            <span style="font-size: 0.9rem; color: #6d6d80; letter-spacing: 3px; display: block;">CONECTANDO CON ATMOSCONTROL...</span>
         </div>
     </div>
 
     <div id="main-content">
         <header>
-            <h1>PANEL CONTROL IOT</h1>
-            <p>SISTEMA VINCULADO AL ESP32</p>
+            <h1>ATMOSCONTROL PRO</h1>
+            <p>PANEL DE MONITOREO Y AUTOMATIZACIÓN DE PROCESOS</p>
         </header>
+
+        <div id="status-banner">ESTADO DEL HARDWARE: ESPERANDO DATOS...</div>
 
         <main class="dashboard-grid">
             <div class="card" id="temp-card">
                 <h3>Temperatura</h3>
-                <div class="data-value" id="temp-val">24.0°C</div>
-            </div>
-
-            <div class="card">
-                <h3>Humedad</h3>
-                <div class="data-value" id="hum-val">60%</div>
-            </div>
-
-            <div class="card">
-                <h3>Control Motor</h3>
-                <p style="color: var(--texto-secundario); font-size: 0.9rem; margin-bottom: 10px;">Actuador Digital</p>
-                <label class="switch">
-                    <input type="checkbox" id="motor-switch" onchange="controlarMotor(this.checked)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div class="card">
-                <h3>Visualización ESP32-CAM</h3>
-                <div class="camera-stream" id="camera-box">
-                    📸 ESPERA DE FLUJO DE VIDEO...
+                <div class="gauge-container">
+                    <svg class="gauge-svg"><circle class="gauge-bg" cx="75" cy="75" r="70"/><circle class="gauge-progress" id="temp-gauge" cx="75" cy="75" r="70"/></svg>
+                    <div class="gauge-text" id="temp-val">--°C</div>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Geolocalización</h3>
-                <p id="gps-data">Buscando satélites GPS...</p>
+                <h3>Humedad Relativa</h3>
+                <div class="gauge-container">
+                    <svg class="gauge-svg"><circle class="gauge-bg" cx="75" cy="75" r="70"/><circle class="gauge-progress" id="hum-gauge" cx="75" cy="75" r="70" style="stroke: var(--cian-neon);"/></svg>
+                    <div class="gauge-text" id="hum-val">--%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Entorno y Gases</h3>
+                <div style="margin-top: 15px; text-align: left; padding: 0 15px;">
+                    <p style="color:#9a8c98; font-size:0.85rem;">CALIDAD DEL AIRE:</p>
+                    <p id="aire-val" style="font-size: 1.8rem; font-weight:700; margin-bottom:15px; color:#fff;">--%</p>
+                    <p style="color:#9a8c98; font-size:0.85rem;">ÍNDICE RADIACIÓN UV:</p>
+                    <p id="uv-val" style="font-size: 1.8rem; font-weight:700; color:#fff;">-- UV</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Extractor de Aire</h3>
+                <p style="color: #6d6d80; font-size: 0.85rem; margin-bottom: 20px;">Control Remoto Pin G12</p>
+                <label class="switch">
+                    <input type="checkbox" id="motor-switch" onchange="comandarExtractor(this.checked)">
+                    <span class="slider"></span>
+                </label>
+                <p id="extractor-status-text" style="margin-top: 15px; font-size: 0.9rem; color: #9a8c98;">Estado: Desconectado</p>
+            </div>
+
+            <div class="card">
+                <h3>Cámara de Monitoreo</h3>
+                <div class="camera-stream" id="camera-box">📸 SIN TRANSMISIÓN ACTIVA</div>
+            </div>
+
+            <div class="card">
+                <h3>Módulo GPS (Joystick)</h3>
+                <div style="margin-top: 20px; line-height: 2;" id="gps-data">
+                    <p><b>Latitud:</b> --</p>
+                    <p><b>Longitud:</b> --</p>
+                </div>
             </div>
         </main>
     </div>
 
     <script>
-        // 1. REGISTRO DEL SERVICE WORKER (Para poder instalar en el cel)
+        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registrado con éxito', reg))
-                    .catch(err => console.error('Error al registrar el Service Worker', err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
         }
 
-        // Configuración de la dirección IP de tu ESP32 (Aquí pondrás la real después)
+        // CAMBIA ESTO POR LA IP QUE TE DE TU ESP32 EN LA PANTALLA LCD O MONITOR SERIE
         const IP_ESP32 = "192.168.1.100"; 
 
-        // Animación de la Pantalla de Carga
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                const main = document.getElementById('main-content');
+                document.getElementById('splash-screen').style.opacity = '0';
+                document.getElementById('main-content').style.opacity = '1';
+                setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; }, 600);
                 
-                splash.style.opacity = '0';
-                main.style.opacity = '1';
+                if ("Notification" in window) Notification.requestPermission();
                 
-                setTimeout(() => { splash.style.display = 'none'; }, 800);
-                
-                solicitarPermisosNotificacion();
-                obtenerGPS();
-                inicializarCamara();
-                conectarESP32(); 
-            }, 3000); // Mantiene la pantalla por 3 segundos
+                // Pedir datos al ESP32 cada 1 segundo (Peticiones en tiempo real)
+                setInterval(obtenerDatosESP32, 1000);
+            }, 3000);
         });
 
-        // Permisos de Notificación
-        function solicitarPermisosNotificacion() {
-            if ("Notification" in window) {
-                Notification.requestPermission();
-            }
+        // Configurar Gauges Circulares matemáticamente
+        function setGaugeValue(elementId, value, max) {
+            const circle = document.getElementById(elementId);
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            const offset = circumference - (Math.min(value, max) / max) * circumference;
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            circle.style.strokeDashoffset = offset;
         }
 
-        // 2. CONEXIÓN REAL CON JAVASCRIPT (Simulación de recepción de datos por ahora)
-        function conectarESP32() {
-            console.log("Intentando conectar con el flujo de datos del ESP32...");
-            // Aquí pondremos la lógica de WebSocket o Fetch más adelante.
-            // De momento, dejamos la simulación para que veas cómo se activa la alerta en el cel:
-            setTimeout(() => {
-                actualizarDatosDispositivo(35.5, 62);
-            }, 4000);
-        }
+        // JAVASCRIPT REAL: Hacer petición HTTP al ESP32 y leer su JSON
+        function obtenerDatosESP32() {
+            fetch(`http://${IP_ESP32}/data`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('status-banner').innerText = "CONECTADO EN TIEMPO REAL";
+                    document.getElementById('status-banner').style.borderColor = var(--cian-neon);
 
-        function actualizarDatosDispositivo(temp, hum) {
-            document.getElementById('temp-val').innerText = temp.toFixed(1) + "°C";
-            document.getElementById('hum-val').innerText = hum + "%";
+                    // Actualizar Temperatura
+                    document.getElementById('temp-val').innerText = data.temp.toFixed(1) + "°C";
+                    setGaugeValue('temp-gauge', data.temp, 50); // Máximo 50 grados
 
-            const tempCard = document.getElementById('temp-card');
-            
-            if(temp >= 34.0) {
-                tempCard.classList.add('alert-active');
-                dispararNotificacionAlerta(temp);
-            } else {
-                tempCard.classList.remove('alert-active');
-            }
-        }
+                    // Actualizar Humedad
+                    document.getElementById('hum-val').innerText = data.hum + "%";
+                    setGaugeValue('hum-gauge', data.hum, 100);
 
-        // Disparo de la alerta nativa en el teléfono
-        function dispararNotificacionAlerta(temp) {
-            if (Notification.permission === "granted") {
-                new Notification("⚠️ CRÍTICA - ATMOSCONTROL", {
-                    body: `¡Temperatura elevada! Se registraron ${temp}°C.`,
-                    icon: "image_3.png"
+                    // Aire y UV
+                    document.getElementById('aire-val').innerText = data.aire.toFixed(0) + "%";
+                    document.getElementById('uv-val').innerText = data.uv.toFixed(1) + " UV";
+
+                    // GPS simulado por Joystick
+                    document.getElementById('gps-data').innerHTML = `<p><b>Latitud:</b> ${data.lat.toFixed(5)}</p><p><b>Longitud:</b> ${data.lon.toFixed(5)}</p>`;
+
+                    // Actualizar interruptor según el estado real del pin en el ESP32
+                    document.getElementById('motor-switch').checked = data.extractor;
+                    document.getElementById('extractor-status-text').innerText = data.extractor ? "Estado: ACTIVO" : "Estado: APAGADO";
+
+                    // Lógica de Alarma local en la app
+                    const tempCard = document.getElementById('temp-card');
+                    if (data.temp >= 34.0) {
+                        if (!tempCard.classList.contains('alert-active')) {
+                            tempCard.classList.add('alert-active');
+                            if (Notification.permission === "granted") {
+                                new Notification("⚠️ ALERTA: TEMPERATURA CRÍTICA", { body: `¡Se han detectado ${data.temp}°C!` });
+                            }
+                        }
+                    } else {
+                        tempCard.classList.remove('alert-active');
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('status-banner').innerText = "HARDWARE DESCONECTADO (REVISAR WI-FI / IP)";
+                    document.getElementById('status-banner').style.borderColor = var(--rojo-alerta);
                 });
-            }
         }
 
-        // 3. FUNCIÓN REAL DE JAVASCRIPT PARA EL MOTOR
-        function controlarMotor(estado) {
-            const estadoTexto = estado ? "on" : "off";
-            console.log(`Enviando comando HTTP: http://${IP_ESP32}/motor?state=${estadoTexto}`);
-            
-            // Con esta línea de JS se enviará la orden real al ESP32:
-            fetch(`http://${IP_ESP32}/motor?state=${estadoTexto}`)
-                .then(response => console.log("Comando recibido por el ESP32"))
-                .catch(err => console.warn("ESP32 no detectado en red local todavía."));
-        }
-
-        // 4. INTEGRACIÓN DE LA CÁMARA
-        function inicializarCamara() {
-            const cameraBox = document.getElementById('camera-box');
-            // Cuando el ESP32 esté listo, reemplazaremos esto con su IP de streaming real
-            // Ejemplo: cameraBox.innerHTML = `<img src="http://${IP_ESP32}:81/stream" style="width:100%; height:100%; border-radius:12px; object-fit:cover;">`;
-        }
-
-        // Captura del GPS nativo
-        function obtenerGPS() {
-            const gpsText = document.getElementById('gps-data');
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const lat = position.coords.latitude.toFixed(5);
-                    const lon = position.coords.longitude.toFixed(5);
-                    gpsText.innerHTML = `<b>Latitud:</b> ${lat}<br><b>Longitud:</b> ${lon}`;
-                }, (error) => {
-                    gpsText.innerText = "Acceso a localización denegado.";
-                });
-            } else {
-                gpsText.innerText = "Geolocalización no soportada.";
-            }
+        // JAVASCRIPT REAL: Enviar orden de encendido/apagado al pin 12 del ESP32
+        function comandarExtractor(estado) {
+            const stateStr = estado ? "1" : "0";
+            fetch(`http://${IP_ESP32}/toggleExtractor?state=${stateStr}`)
+                .then(res => console.log("Comando enviado de forma asíncrona"))
+                .catch(err => console.error("Error al enviar comando al relé"));
         }
     </script>
 </body>
