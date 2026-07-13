@@ -69,6 +69,31 @@
 
         /* Cámara */
         .camera-stream { width: 100%; height: 200px; background-color: #09090d; border-radius: 15px; border: 1px dashed #303045; display: flex; align-items: center; justify-content: center; color: #555; font-size: 0.9rem; overflow: hidden; }
+
+        /* Estilo Exclusivo del Botón de Google Maps */
+        .btn-maps {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #7b2cbf, #9d4edf);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(157, 78, 223, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-maps:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(157, 78, 223, 0.5);
+            background: linear-gradient(135deg, #9d4edf, #00f5d4);
+            color: #06060a;
+        }
     </style>
 </head>
 <body>
@@ -82,7 +107,7 @@
 
     <div id="main-content">
         <header>
-            <h1>ATMOSCONTROL PRO</h1>
+            <h1>ATMOSCONTROL</h1>
             <p>PANEL DE MONITOREO Y AUTOMATIZACIÓN DE PROCESOS</p>
         </header>
 
@@ -132,10 +157,12 @@
 
             <div class="card">
                 <h3>Módulo GPS (Joystick)</h3>
-                <div style="margin-top: 20px; line-height: 2;" id="gps-data">
+                <div style="margin-top: 15px; line-height: 2; text-align: left; padding: 0 10px;" id="gps-data">
                     <p><b>Latitud:</b> --</p>
                     <p><b>Longitud:</b> --</p>
                 </div>
+                <!-- Botón dinámico que abrirá Google Maps -->
+                <a href="#" id="maps-link" target="_blank" class="btn-maps">🗺️ Ver en Google Maps</a>
             </div>
         </main>
     </div>
@@ -202,6 +229,10 @@
                     // Inyectar Coordenadas procesadas por el Joystick
                     document.getElementById('gps-data').innerHTML = `<p><b>Latitud:</b> ${data.lat.toFixed(5)}</p><p><b>Longitud:</b> ${data.lon.toFixed(5)}</p>`;
 
+                    // Actualizar dinámicamente el enlace del botón de Google Maps con las coordenadas reales
+                    const mapsLink = document.getElementById('maps-link');
+                    mapsLink.href = `https://www.google.com/maps/search/?api=1&query=${data.lat},${data.lon}`;
+
                     // Sincronizar el interruptor con el estado real del pin físico en la protoboard
                     document.getElementById('motor-switch').checked = data.extractor;
                     document.getElementById('extractor-status-text').innerText = data.extractor ? "Estado: ACTIVO" : "Estado: APAGADO";
@@ -219,6 +250,7 @@
                             }
                         }
                     } else {
+                        img_efd4be.jpg
                         tempCard.classList.remove('alert-active');
                     }
                 })
