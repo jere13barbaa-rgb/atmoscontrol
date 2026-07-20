@@ -1,203 +1,104 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>AtmosControl IoT Pro</title>
-
     <link rel="manifest" href="manifest.json">
-
     <style>
-
         :root {
-
             --bg-principal: #06060a;       
-
             --bg-tarjeta: #11111d;         
-
             --morado-neon: #9d4edf;        
-
             --cian-neon: #00f5d4;
-
             --texto-principal: #e0aaff;    
-
             --texto-secundario: #7b2cbf;   
-
             --rojo-alerta: #ff0054;        
-
         }
-
-
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-
         body { background-color: var(--bg-principal); color: #fff; overflow-x: hidden; }
 
-
-
         /* Pantalla de Carga */
-
         #splash-screen {
-
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-
             background: radial-gradient(circle, #12072b 0%, var(--bg-principal) 100%);
-
             display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;
-
             transition: opacity 0.6s ease, display 0.6s;
-
         }
-
         .splash-logo-container { opacity: 0; transform: scale(0.85); animation: entradaCyber 1.2s forwards ease-out; text-align: center; }
-
         .splash-logo-img { max-width: 260px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--morado-neon)); }
-
         @keyframes entradaCyber { to { opacity: 1; transform: scale(1); } }
 
-
-
         /* Contenedor Principal */
-
         #main-content { opacity: 0; transition: opacity 0.8s ease; padding: 20px; max-width: 1200px; margin: 0 auto; }
-
         header { text-align: center; margin-bottom: 30px; }
-
         header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 10px var(--morado-neon); }
-
         header p { color: #9a8c98; font-size: 0.9rem; margin-top: 5px; }
 
-
-
         /* Grid */
-
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-
         .card {
-
             background: var(--bg-tarjeta); border: 1px solid rgba(157, 78, 223, 0.1); border-radius: 20px;
-
             padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; transition: all 0.3s ease;
-
         }
-
         .card:hover { transform: translateY(-3px); border-color: var(--morado-neon); box-shadow: 0 0 20px rgba(157, 78, 223, 0.2); }
-
         .card h3 { color: #9a8c98; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
 
-
-
         /* Indicadores Circulares Pro (Gauges) */
-
         .gauge-container { position: relative; width: 150px; height: 150px; margin: 0 auto; }
-
         .gauge-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-
         .gauge-bg { fill: none; stroke: #1a1a2e; stroke-width: 10; }
-
         .gauge-progress { fill: none; stroke: var(--morado-neon); stroke-width: 10; stroke-linecap: round; stroke-dasharray: 440; stroke-dashoffset: 440; transition: stroke-dashoffset 0.5s ease; }
-
         .gauge-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.8rem; font-weight: 700; }
 
-
-
         /* Alerta Crítica Estilo */
-
         .alert-active { border-color: var(--rojo-alerta) !important; box-shadow: 0 0 25px rgba(255, 0, 84, 0.3) !important; animation: pulso 2s infinite; }
-
         @keyframes pulso { 50% { border-color: rgba(255, 0, 84, 0.2); } }
 
-
-
         /* Interruptores Modernos */
-
         .switch { position: relative; display: inline-block; width: 70px; height: 36px; }
-
         .switch input { display: none; }
-
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #202030; border-radius: 34px; transition: .4s; border: 1px solid rgba(255,255,255,0.05); }
-
         .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: #888; border-radius: 50%; transition: .4s; }
-
         input:checked + .slider { background-color: rgba(0, 245, 212, 0.1); border-color: var(--cian-neon); box-shadow: 0 0 15px var(--cian-neon); }
-
         input:checked + .slider:before { transform: translateX(34px); background-color: var(--cian-neon); filter: drop-shadow(0 0 5px var(--cian-neon)); }
 
-
-
         /* Estado del Sistema */
-
         #status-banner { width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; margin-bottom: 25px; text-align: center; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.05); letter-spacing: 1px; transition: all 0.3s ease; }
 
-
-
         /* Cámara */
-
         .camera-stream { width: 100%; height: 200px; background-color: #09090d; border-radius: 15px; border: 1px dashed #303045; display: flex; align-items: center; justify-content: center; color: #555; font-size: 0.9rem; overflow: hidden; }
 
-
-
         /* Estilo Exclusivo del Botón de Google Maps */
-
         .btn-maps {
-
             display: inline-block;
-
             width: 100%;
-
             padding: 12px;
-
             margin-top: 15px;
-
             background: linear-gradient(135deg, #7b2cbf, #9d4edf);
-
             color: white;
-
             border: none;
-
             border-radius: 12px;
-
             font-weight: 700;
-
             text-transform: uppercase;
-
             letter-spacing: 1px;
-
             cursor: pointer;
-
             text-decoration: none;
-
             box-shadow: 0 4px 15px rgba(157, 78, 223, 0.3);
-
             transition: all 0.3s ease;
-
         }
 
         .btn-maps:hover {
-
             transform: translateY(-2px);
-
             box-shadow: 0 6px 20px rgba(157, 78, 223, 0.5);
-
             background: linear-gradient(135deg, #9d4edf, #00f5d4);
-
             color: #06060a;
-
         }
 
     </style>
-
 </head>
-
 <body>
-
-
-
     <div id="splash-screen">
         <div class="splash-logo-container">
             <img src="image_3.png" alt="Logo" class="splash-logo-img">
@@ -270,7 +171,8 @@
         }
 
         // ⚠️ REEMPLAZA ESTA DIRECCIÓN POR LA QUE TE DA EL ESP32 EN TU PANTALLA LCD
-        const IP_ESP32 = "192.168.180.227"; 
+        const IP_ESP32 = "192.168.180.227";
+	let erroresConexion = 0;
 
         // Manejo asíncrono y seguro de la Pantalla de Carga (No bloqueante)
         window.addEventListener('DOMContentLoaded', () => {
@@ -286,6 +188,7 @@
                 if ("Notification" in window) Notification.requestPermission();
 
                 // Realizar peticiones en segundo plano de manera infinita cada 1 segundo
+		obtenerDatosESP32();
                 setInterval(obtenerDatosESP32, 1000);
             }, 3000); // 3 segundos exactos de animación inicial
         });
@@ -305,10 +208,12 @@
                 .then(response => response.json())
                 .then(data => {
 
-                    banner.innerText = "🟢 ESP32 CONECTADO";
-		    banner.style.background = "#0b1f16";
-		    banner.style.borderColor = "#00f5d4";
-		    banner.style.color = "#00f5d4";
+                    const banner = document.getElementById("status-banner");
+
+    		    banner.innerText = "🟢 ESP32 CONECTADO";
+    		    banner.style.background = "#0b1f16";
+    		    banner.style.borderColor = "#00f5d4";
+    		    banner.style.color = "#00f5d4";
 
                     // Inyectar datos de Temperatura
                     document.getElementById('temp-val').innerText = data.temp.toFixed(1) + "°C";
@@ -346,7 +251,6 @@
                             }
                         }
                     } else {
-                        img_efd4be.jpg
                         tempCard.classList.remove('alert-active');
                     }
                 })
