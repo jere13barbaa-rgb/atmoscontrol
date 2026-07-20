@@ -305,10 +305,10 @@
                 .then(response => response.json())
                 .then(data => {
 
-                    const banner = document.getElementById('status-banner');
-                    banner.innerText = "CONECTADO EN TIEMPO REAL";
-                    banner.style.borderColor = "#00f5d4";
-                    banner.style.color = "#00f5d4";
+                    banner.innerText = "🟢 ESP32 CONECTADO";
+		    banner.style.background = "#0b1f16";
+		    banner.style.borderColor = "#00f5d4";
+		    banner.style.color = "#00f5d4";
 
                     // Inyectar datos de Temperatura
                     document.getElementById('temp-val').innerText = data.temp.toFixed(1) + "°C";
@@ -350,13 +350,21 @@
                         tempCard.classList.remove('alert-active');
                     }
                 })
+
                 .catch(err => {
-                    // En caso de que se apague el hardware o cambie la IP
-                    const banner = document.getElementById('status-banner');
-                    banner.innerText = "HARDWARE DESCONECTADO (REVISAR WI-FI / IP)";
-                    banner.style.borderColor = "#ff0054";
-                    banner.style.color = "#ff0054";
-                });
+
+    			erroresConexion++;
+
+    			if (erroresConexion >= 3) {
+
+        		const banner = document.getElementById('status-banner');
+        		banner.innerText = "HARDWARE DESCONECTADO (REVISAR WI-FI / IP)";
+        		banner.style.borderColor = "#ff0054";
+        		banner.style.color = "#ff0054";
+
+    			}
+
+		});
         }
 
         // Envío remoto del estado del interruptor al Relé en el pin 12

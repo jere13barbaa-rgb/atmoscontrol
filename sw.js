@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atmoscontrol-v6';
+const CACHE_NAME = 'atmoscontrol-v7';
 const assets = [
   'index.html',
   'manifest.json',
